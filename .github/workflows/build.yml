@@ -1,5 +1,11 @@
 name: build
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   apk:
     runs-on: ubuntu-latest
@@ -16,3 +22,7 @@ jobs:
         with:
           name: apk
           path: DockLauncher/app/build/outputs/apk/debug/app-debug.apk
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: DockLauncher/app/build/outputs/apk/debug/app-debug.apk
